@@ -1,6 +1,9 @@
-# Bankist App
+<h1 align="center">💰 Bankist App</h1>
 
-## Log in to see details of a bank account, make transfers, get loans or close account
+### About
+Log in to see details of a bank account, make transfers, get loans or close account
+
+---
 
 ![](bankist.png)
 
@@ -10,10 +13,14 @@
 - Get loans
 - Close (delete) account
 
+---
+
 ### Tecnologies
 - Javascript
 - HTML
 - CSS
+
+---
 
 ### Test Data
 1. login: js, pin: 1111
