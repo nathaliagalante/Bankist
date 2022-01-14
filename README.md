@@ -1,11 +1,11 @@
 <h1 align="center">💰 Bankist App</h1>
 
+![](bankist.png)
+
 ### About
 Log in to see details of a bank account, make transfers, get loans or close account
 
 ---
-
-![](bankist.png)
 
 ### Functionalities
 - Login
