@@ -3,7 +3,7 @@
 ![](bankist.png)
 
 ### About
-Log in to see details of a bank account, make transfers, get loans or close account
+Bankist is a javascript project developed for Jonas Schmedtmann's online course. He made available the design and the flowchart with the functionalities and I developed by myself all of them. Log in to see details of a bank account, make transfers, get loans or close account.
 
 ---
 
