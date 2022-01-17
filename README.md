@@ -24,6 +24,4 @@ Bankist is a javascript project developed for Jonas Schmedtmann's online course.
 
 ### Test Data
 1. login: js, pin: 1111
-2. login: jd, pin: 2222,
-3. login: stw, pin: 3333,
-4. login: ss, pin: 4444
+2. login: jd, pin: 2222
