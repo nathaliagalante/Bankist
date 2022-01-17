@@ -75,7 +75,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 ////////////////////////////////////////////////////////
 // functions
-const formatMovementDate = date => {
+const formatMovementDate = (date, locale) => {
     const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
     const daysPassed = calcDaysPassed(new Date(), date);
@@ -83,13 +83,15 @@ const formatMovementDate = date => {
     if(daysPassed === 0 ) return 'Today';
     if(daysPassed === 1) return 'Yesterday';
     if(daysPassed <= 7) return `${daysPassed} days ago`;
-    else {
-        const day = `${date.getDate()}`.padStart(2, 0);
-        const month = `${date.getMonth() + 1}`.padStart(2, 0);
-        const year = date.getFullYear();
+    
+    return new Intl.DateTimeFormat(locale).format(date);
+}
 
-        return `${day}/${month}/${year}`;
-    }
+const formatCur = (value, locale, currency) => {
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currency
+    }).format(value);
 }
 
 const displayMovements = (acc, sort = false) => {
@@ -101,13 +103,15 @@ const displayMovements = (acc, sort = false) => {
         const type = mov > 0 ? 'deposit' : 'withdrawal';
 
         const date = new Date(acc.movementsDates[i]);
-        const displayDate = formatMovementDate(date);
+        const displayDate = formatMovementDate(date, acc.locale);
+
+        const formattedMov = formatCur(mov, acc.locale, acc.currency);
 
         const html = `
             <div class="movements__row">
                 <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
                 <div class="movements__date">${displayDate}</div>
-                <div class="movements__value">${mov.toFixed(2)}€</div>
+                <div class="movements__value">${formattedMov}</div>
             </div>
         `;
 
@@ -119,7 +123,7 @@ const displayMovements = (acc, sort = false) => {
 const calcDisplayBalance = acc => {
     acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
 
-    labelBalance.textContent = `${acc.balance.toFixed(2)} EUR`
+    labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 }
 
 // calculate and display summary
@@ -127,19 +131,19 @@ const calcDisplaySummary = acc => {
     const incomes = acc.movements
         .filter(mov => mov > 0)
         .reduce((acc, mov) => acc + mov, 0);
-    labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+    labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
 
     const outcomes = acc.movements
         .filter(mov => mov < 0)
         .reduce((acc, mov) => acc + mov, 0);
-    labelSumOut.textContent = `${Math.abs(outcomes).toFixed(2)}€`;
+    labelSumOut.textContent = formatCur(Math.abs(outcomes), acc.locale, acc.currency);
 
     const interest = acc.movements
         .filter(mov => mov > 0)
         .map(deposit => deposit * acc.interestRate/100)
         .filter(int => int >= 1)
         .reduce((acc, int) => acc + int);
-    labelSumInterest.textContent = `${interest.toFixed(2)}€`
+    labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);;
 }
 
 // create usernames
@@ -171,6 +175,7 @@ let currentAccount;
 // containerApp.style.opacity = 100;
 
 
+
 btnLogin.addEventListener('click', e => {
     e.preventDefault();
 
@@ -183,12 +188,17 @@ btnLogin.addEventListener('click', e => {
 
         // create current date and time
         const now = new Date();
-        const date = `${now.getDate()}`.padStart(2, 0);
-        const month = `${now.getMonth() + 1}`.padStart(2, 0);
-        const year = now.getFullYear();
-        const hour = now.getHours();
-        const min = `${now.getMinutes()}`.padStart(2, 0);
-        labelDate.textContent = `${date}/${month}/${year}, ${hour}:${min}`
+
+        const options = {
+            hour: 'numeric',
+            minute: 'numeric',
+            day: 'numeric',
+            month: 'numeric', //long or 2-
+            year: 'numeric',
+        };
+        // const locale = navigator.language;
+
+        labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
 
         // clear input fields
         inputLoginUsername.value = inputLoginPin.value = ''
